@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Iif/3l1DU63tod1PGH0TThhB81ichqDHMldHRfDhwy5IgMqudxTS57dwR2n8BEuzdUID/m15Yx096jf9HWiecA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\HenkOberholzer\\Development\\hngkng_bt_gyro_joystick\\hjo.btgyro.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\jetbrains.annotations\\2018.3.0\\jetbrains.annotations.2018.3.0.nupkg.sha512",
+    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\nefarius.vigem.client\\1.16.150\\nefarius.vigem.client.1.16.150.nupkg.sha512"
+  ],
+  "logs": []
+}

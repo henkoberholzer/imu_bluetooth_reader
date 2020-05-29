@@ -1,4 +1,4 @@
-﻿namespace hjo.btgyro
+﻿namespace hngkng.btgyro
 {
 	using System;
 
@@ -6,26 +6,21 @@
 	{
 		static void Main(string[] args)
 		{
+			var cancelEvent = new System.Threading.ManualResetEvent(false);
+
+			System.Console.CancelKeyPress += delegate(object sender, System.ConsoleCancelEventArgs args)
+			{
+				cancelEvent.Set();
+			};
+
 			var subject = new Device(Console.Write, Console.WriteLine);
 			try
 			{
 				Console.WriteLine("Running...");
-
-				Console.WriteLine("R = calibrate/reset");
-				Console.WriteLine("X = quit");
-
-				ConsoleKeyInfo keyInfo = Console.ReadKey();
-				while (keyInfo.Key != ConsoleKey.X)
-				{
-					if (keyInfo.Key == ConsoleKey.R)
-					{
-						subject.Calibrate();
-					}
-
-					Console.WriteLine("R = calibrate/reset");
-					Console.WriteLine("X = quit");
-					keyInfo = Console.ReadKey();
-				}
+				Console.ReadKey();
+				Console.WriteLine("Calibrating...");
+				subject.Calibrate();
+				cancelEvent.WaitOne();
 			}
 			finally
 			{

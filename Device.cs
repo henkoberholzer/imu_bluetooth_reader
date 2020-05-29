@@ -1,6 +1,7 @@
-namespace hjo.btgyro
+namespace hngkng.btgyro
 {
 	using System.Linq;
+	using System.Runtime.InteropServices.WindowsRuntime;
 	using Windows.Devices.Bluetooth;
 	using Windows.Devices.Bluetooth.GenericAttributeProfile;
 	using Windows.Devices.Enumeration;
@@ -11,9 +12,13 @@ namespace hjo.btgyro
 	{
 		private readonly System.Action<string> log;
 		private readonly System.Action<string> logEol;
-		private readonly Nefarius.ViGEm.Client.ViGEmClient vigemClient;
-		private readonly Nefarius.ViGEm.Client.Targets.IDualShock4Controller dualShock4Controller;
-		private readonly Receiver receiver;
+		private readonly ReceiverStateMachine receiver;
+		private readonly System.Net.Sockets.UdpClient udp;
+		private GattCharacteristic txRxChannel;
+		private byte[] btData;
+		private IBuffer btBuffer;
+		private double lastX, lastY, lastZ;
+		private byte[] data = new byte[48];
 
 		public Device(
 			System.Action<string> log,
@@ -22,72 +27,83 @@ namespace hjo.btgyro
 			this.log = log;
 			this.logEol = logWithEol;
 
-			this.receiver = new NullReceiver();
+			this.btData = new byte[1];
+			this.btData[0] = 83;
+			this.btBuffer = this.btData.AsBuffer();
+
+			for (int i=0; i<(8*3); i++)
+			{
+				this.data[i] = 0;
+			}
+
+			this.udp = new System.Net.Sockets.UdpClient();
+			this.udp.Connect("localhost", 4242);
+			this.receiver = new ReceiverStateMachine(this.SetX, this.SetY, this.SetZ);
 
 			if (!this.BluetoothSetup())
 			{
 				throw new System.Exception("Could not connect to bluetooth device. Make sure it is paired and connected.");
 			}
+		}
 
-			this.vigemClient = new Nefarius.ViGEm.Client.ViGEmClient();
-			this.dualShock4Controller = this.vigemClient.CreateDualShock4Controller();
-			this.dualShock4Controller.Connect();
-
-			this.receiver = new ReceiverStateMachine(this.SetX, this.SetY, this.SetZ);
+		public void Calibrate()
+		{
+			if (this.txRxChannel != default(GattCharacteristic))
+			{
+				var result = this.txRxChannel.WriteValueAsync(this.btBuffer);
+				while (result.Status == AsyncStatus.Started) {}
+			}
 		}
 
 		public void Teardown()
 		{
-			this.dualShock4Controller.Disconnect();
-			this.vigemClient.Dispose();
+			if (this.txRxChannel != default(GattCharacteristic))
+			{
+				this.txRxChannel.ValueChanged -= this.TxRx_ValueChanged;
+			}
+			this.udp.Close();
+			this.udp.Dispose();
 		}
 
-		private static float scaleValue = 360f / 127.5f;
-		private int lastX, lastY, lastZ;
-		private int biasX, biasY, biasZ;
-
-		public void Calibrate()
-		{
-			this.biasX = this.lastX * -1;
-			this.biasY = this.lastY * -1;
-			this.biasZ = this.lastZ * -1;
-		}
-
-		private static byte GetValueForDs4(int value, int bias)
-		{
-			int calibrated = value + bias;
-			int abs = System.Math.Abs(calibrated);
-			float scaled = abs / scaleValue;
-			float ds4value = 127.5f + scaled;
-			byte ds4valueAsByte = (byte)ds4value;
-			return ds4valueAsByte;
-		}
-
-		private void SetX(int value)
+		private void SetX(double value)
 		{
 			this.lastX = value;
-			byte processed = GetValueForDs4(value, this.biasX);
-			this.dualShock4Controller.SetAxisValue(
-				Nefarius.ViGEm.Client.Targets.DualShock4.DualShock4Axis.RightThumbX,
-				processed);
+			this.Dispatch();
 		}
 
-		private void SetY(int value)
+		private void SetY(double value)
 		{
 			this.lastY = value;
-			byte processed = GetValueForDs4(value, this.biasY);
-			this.dualShock4Controller.SetAxisValue(
-				Nefarius.ViGEm.Client.Targets.DualShock4.DualShock4Axis.RightThumbY,
-				processed);
+			this.Dispatch();
 		}
 
-		private void SetZ(int value)
+		private void SetZ(double value)
 		{
 			this.lastZ = value;
-			byte processed = GetValueForDs4(value, this.biasZ);
-			this.dualShock4Controller.SetAxisValue(
-				Nefarius.ViGEm.Client.Targets.DualShock4.DualShock4Axis.LeftThumbX,
-				processed);
+			this.Dispatch();
+		}
+
+		private void Dispatch()
+		{
+			byte[] x = System.BitConverter.GetBytes(this.lastX);
+			for (int i=0; i<8; i++)
+			{
+				this.data[24+i] = x[i];
+			}
+
+			byte[] y = System.BitConverter.GetBytes(this.lastY);
+			for (int i=0; i<8; i++)
+			{
+				this.data[32+i] = y[i];
+			}
+
+			byte[] z = System.BitConverter.GetBytes(this.lastZ);
+			for (int i=0; i<8; i++)
+			{
+				this.data[40+i] = z[i];
+			}
+
+			this.udp.Send(this.data, 48);
 		}
 
 		private bool BluetoothSetup()
@@ -121,17 +137,17 @@ namespace hjo.btgyro
 			GattCharacteristicsResult characteristics = this.Waitfor(
 				"gyro data service", gyroService.GetCharacteristicsAsync());
 
-			GattCharacteristic txRx = characteristics
+			this.txRxChannel = characteristics
 				.Characteristics
 				.SingleOrDefault(x => x.UserDescription.Replace(" ", "") == "TX&RX");
 
-			if (txRx == default(GattCharacteristic))
+			if (this.txRxChannel == default(GattCharacteristic))
 			{
 				this.logEol("Couldn't find TXRX channel...disconnected?");
 				return false;
 			}
 
-			txRx.ValueChanged += this.TxRx_ValueChanged;
+			this.txRxChannel.ValueChanged += this.TxRx_ValueChanged;
 			return true;
 		}
 

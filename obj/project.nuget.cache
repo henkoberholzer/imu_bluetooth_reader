@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "Iif/3l1DU63tod1PGH0TThhB81ichqDHMldHRfDhwy5IgMqudxTS57dwR2n8BEuzdUID/m15Yx096jf9HWiecA==",
+  "dgSpecHash": "eMiPoO2PNACqZeC9i8GTiutEUrtimVHxu9yGpLocb2UU2e0I2QEyOVx35STVjaZN2+PM84m7OD69hxehZgim2g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\HenkOberholzer\\Development\\hngkng_bt_gyro_joystick\\hjo.btgyro.csproj",
+  "projectFilePath": "C:\\Users\\HenkOberholzer\\Development\\hngkng_bt_gyro_joystick\\hngkng.btgyro.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\jetbrains.annotations\\2018.3.0\\jetbrains.annotations.2018.3.0.nupkg.sha512",
-    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\nefarius.vigem.client\\1.16.150\\nefarius.vigem.client.1.16.150.nupkg.sha512"
+    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\microsoft.netcore.platforms\\3.0.0\\microsoft.netcore.platforms.3.0.0.nupkg.sha512",
+    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\microsoft.windows.sdk.contracts\\10.0.19041.1\\microsoft.windows.sdk.contracts.10.0.19041.1.nupkg.sha512",
+    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\system.runtime.windowsruntime\\4.6.0\\system.runtime.windowsruntime.4.6.0.nupkg.sha512",
+    "C:\\Users\\HenkOberholzer\\.nuget\\packages\\system.runtime.windowsruntime.ui.xaml\\4.6.0\\system.runtime.windowsruntime.ui.xaml.4.6.0.nupkg.sha512"
   ],
   "logs": []
 }

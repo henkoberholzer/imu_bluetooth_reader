@@ -1,0 +1,13 @@
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\bin\Debug\netcoreapp3.1\hngkng.btgyro.exe
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\bin\Debug\netcoreapp3.1\hngkng.btgyro.deps.json
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\bin\Debug\netcoreapp3.1\hngkng.btgyro.runtimeconfig.json
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\bin\Debug\netcoreapp3.1\hngkng.btgyro.runtimeconfig.dev.json
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\bin\Debug\netcoreapp3.1\hngkng.btgyro.dll
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\bin\Debug\netcoreapp3.1\hngkng.btgyro.pdb
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.csprojAssemblyReference.cache
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.AssemblyInfoInputs.cache
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.AssemblyInfo.cs
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.csproj.CoreCompileInputs.cache
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.dll
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.pdb
+C:\Users\HenkOberholzer\Development\hngkng_bt_gyro_joystick\obj\Debug\netcoreapp3.1\hngkng.btgyro.genruntimeconfig.cache

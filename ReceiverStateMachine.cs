@@ -1,23 +1,23 @@
-namespace hjo.btgyro
+namespace hngkng.btgyro
 {
-	public class ReceiverStateMachine : Receiver
+	public class ReceiverStateMachine
 	{
-		private readonly System.Action<int> changeX;
-		private readonly System.Action<int> changeY;
-		private readonly System.Action<int> changeZ;
+		private readonly System.Action<double> changeX;
+		private readonly System.Action<double> changeY;
+		private readonly System.Action<double> changeZ;
 
-		private readonly char[] valueBuffer = new char[4];
-		private int valueBufferPosition;
+		private readonly System.Text.StringBuilder buffer;
 
 		private bool stateX;
 		private bool stateY;
 		private bool stateZ;
 
 		public ReceiverStateMachine(
-			System.Action<int> changeX,
-			System.Action<int> changeY,
-			System.Action<int> changeZ)
+			System.Action<double> changeX,
+			System.Action<double> changeY,
+			System.Action<double> changeZ)
 		{
+			this.buffer = new System.Text.StringBuilder(50);
 			this.changeX = changeX;
 			this.changeY = changeY;
 			this.changeZ = changeZ;
@@ -25,11 +25,7 @@ namespace hjo.btgyro
 
 		private void Reset()
 		{
-			this.valueBufferPosition = 0;
-			this.valueBuffer[0] = '0';
-			this.valueBuffer[1] = '0';
-			this.valueBuffer[2] = '0';
-			this.valueBuffer[3] = '0';
+			this.buffer.Clear();
 			this.stateX = false;
 			this.stateY = false;
 			this.stateZ = false;
@@ -64,17 +60,7 @@ namespace hjo.btgyro
 				this.Reset();
 			};
 
-			this.valueBuffer[this.valueBufferPosition] = next;
-
-			if (this.valueBufferPosition == 3)
-			{
-				this.Flush();
-				this.Reset();
-			}
-			else
-			{
-				this.valueBufferPosition++;
-			}
+			this.buffer.Append(next);
 		}
 
 		private static bool IsDigit(char next)
@@ -88,15 +74,9 @@ namespace hjo.btgyro
 
 		private void Flush()
 		{
-			if (this.valueBufferPosition == 0) return;
+			if (this.buffer.Length == 0) return;
 
-			char[] v = new char[this.valueBufferPosition + 1];
-			for (int i=0; i<this.valueBufferPosition; i++)
-			{
-				v[i] = this.valueBuffer[i];
-			}
-
-			int value = int.Parse(v);
+			double value = double.Parse(this.buffer.ToString());
 
 			if (this.stateX)
 			{
